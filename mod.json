@@ -1,0 +1,9 @@
+{
+    "name": "civselect",
+    "version": "0.0.1",
+    "label": "AOM-style civ-selection interface",
+    "url": "https://github.com/s0600204/0ad-civselection-mod/",
+    "description": "AOM-style civ-selection interface for the Match Setup page",
+    "dependencies": ["0ad>=0.0.18"],
+    "type": "interface"
+}
