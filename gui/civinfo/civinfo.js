@@ -1,4 +1,5 @@
 var g_CivData = {};
+var g_SelectedCiv = "";
 
 function init(settings)
 {
@@ -63,23 +64,56 @@ function escapeChars(str)
 	return str.replace(/"/g, "\\\"");
 };
 
-function subHeading(obj)
+function subHeading(obj, type)
 {
-	if (!obj.Name)
-		return "";
-	let string = '[color="white"][font="sans-bold-14"]' + obj.Name + '[/font] ';
-	if (obj.History)
-		string += '[icon="iconInfo" tooltip="' + escapeChars(obj.History) + '" tooltip_style="civInfoTooltip"]';
-	if (obj.Description)
-		string += '\n     ' + obj.Description;
+	let name, name2, tooltip, description;
+	
+	if (typeof obj === "string")
+	{
+		if (type === "json")
+		{
+			obj = Engine.ReadJSONFile("simulation/data/technologies/" + obj + ".json");
+			name = (obj.specificName !== undefined) ? obj.specificName : obj.genericName;
+		}
+		else if (type === "xml")
+		{
+			obj = loadTemplate(obj);
+			name = obj.Identity.SpecificName;
+		}
+		else
+			return "";
+		
+		name2 = (type === "json") ? obj.genericName : obj.Identity.GenericName;
+		tooltip = (type === "json") ? obj.description : obj.Identity.History;
+		description = (type === "json") ? obj.tooltip : undefined;
+		
+		if (typeof name === "object")
+			name = (name[g_SelectedCiv] === undefined) ? name2 : name[g_SelectedCiv];
+	}
+	else
+	{
+		name = obj.Name;
+		tooltip = obj.History;
+		description = obj.Description;
+	}
+	
+	let string = '[color="white"][font="sans-bold-14"]' + name;
+	if (name2 !== undefined && name2 !== name)
+		string += '[/font] [font="sans-14"](' + name2 + ')';
+	string += '[/font]';
+	if (tooltip !== undefined)
+		string += ' [icon="iconInfo" tooltip="' + escapeChars(tooltip) + '" tooltip_style="civInfoTooltip"]';
+	if (description !== undefined)
+		string += '\n     ' + description;
 	string += '\n[/color]';
 	return string;
+
 }
 
 // Called when user selects civ from dropdown
 function selectCiv(code)
 {
-
+	g_SelectedCiv = code;
 	var civInfo = g_CivData[code];
 	
 	if(!civInfo)
@@ -92,12 +126,12 @@ function selectCiv(code)
 	var bonusCaption = heading(translatePlural("Civilization Bonus", "Civilization Bonuses", civInfo.CivBonuses.length), 12) + '\n';
 	
 	for(var i = 0; i < civInfo.CivBonuses.length; ++i)
-		bonusCaption += subHeading(civInfo.CivBonuses[i]);
+		bonusCaption += subHeading(civInfo.CivBonuses[i], "json");
 
 	bonusCaption += heading(translatePlural("Team Bonus", "Team Bonuses", civInfo.TeamBonuses.length), 12) + '\n';
 	
 	for(var i = 0; i < civInfo.TeamBonuses.length; ++i)
-		bonusCaption += subHeading(civInfo.TeamBonuses[i]);
+		bonusCaption += subHeading(civInfo.TeamBonuses[i], "json");
 
 	Engine.GetGUIObjectByName("civBonuses").caption = bonusCaption;
 
@@ -109,13 +143,13 @@ function selectCiv(code)
 	{
 		var faction = civInfo.Factions[i];
 		for(var j = 0; j < faction.Technologies.length; ++j)
-			techCaption += subHeading(faction.Technologies[j]);
+			techCaption += subHeading(faction.Technologies[j], "json");
 	}
 
 	techCaption += heading(translatePlural("Special Building", "Special Buildings", civInfo.Structures.length), 12) + '\n';
 	
 	for(var i = 0; i < civInfo.Structures.length; ++i)
-		techCaption += subHeading(civInfo.Structures[i]);
+		techCaption += subHeading(civInfo.Structures[i], "xml");
 	
 	Engine.GetGUIObjectByName("civTechs").caption = techCaption;
 
@@ -127,7 +161,7 @@ function selectCiv(code)
 	{
 		var faction = civInfo.Factions[i];
 		for(var j = 0; j < faction.Heroes.length; ++j)
-			heroCaption += subHeading(faction.Heroes[j]);
+			heroCaption += subHeading(faction.Heroes[j], "xml");
 		heroCaption += '\n';
 	}
 	
@@ -137,4 +171,14 @@ function selectCiv(code)
 	// Update civ history display
 	Engine.GetGUIObjectByName("civHistoryHeading").caption = heading(sprintf(translate("History of the %(civilization)s"), { civilization: civInfo.Name }), 16);
 	Engine.GetGUIObjectByName("civHistoryText").caption = civInfo.History;
+}
+
+// copied from structree helper.js, and modified
+function loadTemplate(templateName)
+{
+	// We need to clone the template because we want to perform some translations.
+	var data = clone(Engine.GetTemplate(templateName));
+	translateObjectKeys(data, ["GenericName", "Tooltip"]);
+	   
+	return data;
 }

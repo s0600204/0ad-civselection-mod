@@ -29,27 +29,9 @@
 			],
 			"Heroes":
 			[
-				{
-					"Name":"Chandragupta Maurya",
-					"Class":"",
-					"Armament":"",
-					"Emblem":"",
-					"History":"Founder of the Mauryan Empire."
-				},
-				{
-					"Name":"Ashoka the Great",
-					"Class":"",
-					"Armament":"",
-					"Emblem":"",
-					"History":"Last great emperor of the Mauryan dynasty."
-				},
-				{
-					"Name":"Acharya Chāṇakya",
-					"Class":"",
-					"Armament":"",
-					"Emblem":"",
-					"History":"Great teacher and advisor to Chandragupta Maurya."
-				}
+				"units/maur_hero_ashoka",
+				"units/maur_hero_chanakya",
+				"units/maur_hero_maurya"
 			]
 		}
 	],
