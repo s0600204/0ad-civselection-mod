@@ -165,11 +165,27 @@ function selectCiv (code)
 	var civList = Engine.GetGUIObjectByName("selected_civs");
 	civList.hidden = true;
 	
+	horizSpaceRepeatedObjects ("selected_hero[h]", "h", 6, 0);
+	var heroCount = 0;
+	for (let faction of g_CivData[code].Factions)
+		for (let hero of faction.Heroes)
+			if (typeof hero === "string")
+			{
+				let heroData = GetTemplateData(hero);
+				let heroObj = Engine.GetGUIObjectByName("selected_hero["+ heroCount++ +"]");
+				heroObj.sprite = "stretched:session/portraits/"+heroData.icon;
+				heroObj.hidden = false;
+			}
+	centreHorizSpacedObjects ("selected_hero[h]", "h", heroCount);
+	for (heroCount; heroCount < 6; ++heroCount)
+		Engine.GetGUIObjectByName("selected_hero["+ heroCount +"]").hidden = true;
+	Engine.GetGUIObjectByName("selected_heroes").hidden = false;
+	
 	var history = Engine.GetGUIObjectByName("selected_history");
 	history.caption = g_CivData[code].History;
 	
 	var size = history.parent.size;
-	size.top = 48;
+	size.top = 48+58;
 	history.parent.size = size;
 	
 	var choice = Engine.GetGUIObjectByName("selected_text");
@@ -185,6 +201,8 @@ function selectGroup (code)
 	
 	var heading = Engine.GetGUIObjectByName("selected_heading");
 	heading.caption = g_GroupingData[g_groupChoice][code].Name;
+	
+	Engine.GetGUIObjectByName("selected_heroes").hidden = true;
 	
 	var civList = Engine.GetGUIObjectByName("selected_civs");
 	civList.hidden = false;

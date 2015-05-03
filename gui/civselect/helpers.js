@@ -20,6 +20,32 @@ function horizSpaceRepeatedObjects (basename, splitvar, limit, margin)
 	}
 }
 
+function centreHorizSpacedObjects (basename, splitvar, count)
+{
+	basename = basename.split("["+splitvar+"]", 2);
+	var firstObj = Engine.GetGUIObjectByName(basename.join("[0]"));
+	var lastObj = Engine.GetGUIObjectByName(basename.join("["+(count-1)+"]"));
+	
+	var parent = firstObj.parent.getComputedSize();
+	parent.width = parent.right - parent.left;
+	
+	var childrenWidth = lastObj.size.right - firstObj.size.left;
+	var spacing = firstObj.size.left;
+	var margin = (parent.width - childrenWidth) / 2;
+	var runningWidth = margin;
+	
+	for (let obj = 0; obj < count; ++obj)
+	{
+		let objObj = Engine.GetGUIObjectByName(basename.join("["+ obj +"]"));
+		let objSize = objObj.size;
+		let objWidth = objSize.right - objSize.left;
+		objSize.left = runningWidth;
+		objSize.right = runningWidth + objWidth;
+		runningWidth += objWidth + spacing;
+		objObj.size = objSize;
+	}
+}
+
 function gridArrayRepeatedObjects (basename, splitvar, limit, vMargin, vOffset = 0)
 {
 	if (typeof limit === "number")

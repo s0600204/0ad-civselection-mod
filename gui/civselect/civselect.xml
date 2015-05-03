@@ -4,6 +4,7 @@
 	<script file="gui/common/functions_civinfo.js"/>
 	<script file="gui/common/functions_global_object.js"/>
 	<script file="gui/common/functions_utility.js"/>
+	<script file="gui/structree/helper.js"/>
 	<script file="gui/civselect/helpers.js"/>
 	<script file="gui/civselect/civselect.js"/>
 
@@ -90,6 +91,18 @@
 				text_align="center"
 				size="4 44 100%-4 100%-4"
 			/>
+			
+			<object size="8 48 100%-8 48+48" type="image" sprite="ModernDarkBoxGold" name="selected_heroes">
+				<repeat count="6" var="h">
+					<object
+						name="selected_hero[h]"
+						type="image"
+						style="HeroImage"
+					>
+						<object type="image" style="IconFrame"/>
+					</object>
+				</repeat>
+			</object>
 			
 			<object size="8 48 100%-8 100%-8" type="image" sprite="ModernDarkBoxGold">
 				<object
