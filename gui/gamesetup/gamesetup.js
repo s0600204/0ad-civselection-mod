@@ -593,6 +593,12 @@ function initCivNameList()
 	}
 }
 
+function setCiv(args)
+{
+	var obj = Engine.GetGUIObjectByName("playerCiv["+args.player+"]");
+	obj.selected = obj.list_data.indexOf(args.civ);
+}
+
 // Initialise the list control containing all the available maps
 function initMapNameList()
 {
@@ -1130,14 +1136,23 @@ function launchGame()
 	//  (this is synchronized because we're the host)
 	var cultures = [];
 	for each (var civ in g_CivData)
-		if (civ.Culture !== undefined && cultures.indexOf(civ.Culture) < 0 && civ.SelectableInGameSetup !== false)
-			cultures.push(civ.Culture);
+		if (civ.Culture !== undefined && civ.SelectableInGameSetup !== false)
+			if (typeof civ.Culture === "string" && cultures.indexOf(civ.Culture) < 0)
+				cultures.push(civ.Culture);
+			else if (typeof civ.Culture !== "string")
+				for (let cult of civ.Culture)
+					if (cultures.indexOf(cult) < 0)
+						cultures.push(cult);
 	var allcivs = new Array(cultures.length);
 	for (var i = 0; i < allcivs.length; ++i)
-		allcivs[i] = [];
+		allcivs[i] = [];	
 	for each (var civ in g_CivData)
 		if (civ.Culture !== undefined && civ.SelectableInGameSetup !== false)
-			allcivs[cultures.indexOf(civ.Culture)].push(civ.Code);
+			if (typeof civ.Culture === "string")
+				allcivs[cultures.indexOf(civ.Culture)].push(civ.Code);
+			else
+				for (let cult of civ.Culture)
+					allcivs[cultures.indexOf(cult)].push(civ.Code);
 
 	const romanNumbers = [undefined, "I", "II", "III", "IV", "V", "VI", "VII", "VIII"];
 	for (var i = 0; i < numPlayers; ++i)
@@ -1480,6 +1495,7 @@ function onGameAttributesChange()
 		var pAssignmentText = Engine.GetGUIObjectByName("playerAssignmentText["+i+"]");
 		var pCiv = Engine.GetGUIObjectByName("playerCiv["+i+"]");
 		var pCivText = Engine.GetGUIObjectByName("playerCivText["+i+"]");
+		var pCivButton = Engine.GetGUIObjectByName("playerCivButton["+i+"]");
 		var pTeam = Engine.GetGUIObjectByName("playerTeam["+i+"]");
 		var pTeamText = Engine.GetGUIObjectByName("playerTeamText["+i+"]");
 		var pColor = Engine.GetGUIObjectByName("playerColor["+i+"]");
@@ -1509,6 +1525,7 @@ function onGameAttributesChange()
 		if (!g_IsController || g_GameAttributes.mapType == "scenario")
 		{
 			pCivText.hidden = false;
+			pCivButton.hidden = true;
 			pCiv.hidden = true;
 			pTeamText.hidden = false;
 			pTeam.hidden = true;
@@ -1522,6 +1539,7 @@ function onGameAttributesChange()
 		else if (g_GameAttributes.mapType != "scenario")
 		{
 			pCivText.hidden = true;
+			pCivButton.hidden = false;
 			pCiv.hidden = false;
 			pTeamText.hidden = true;
 			pTeam.hidden = false;
