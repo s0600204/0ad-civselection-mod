@@ -1416,6 +1416,7 @@ function onGameAttributesChange()
 		var pAssignmentText = Engine.GetGUIObjectByName("playerAssignmentText["+i+"]");
 		var pCiv = Engine.GetGUIObjectByName("playerCiv["+i+"]");
 		var pCivText = Engine.GetGUIObjectByName("playerCivText["+i+"]");
+		var pCivButton = Engine.GetGUIObjectByName("playerCivButton["+i+"]");
 		var pTeam = Engine.GetGUIObjectByName("playerTeam["+i+"]");
 		var pTeamText = Engine.GetGUIObjectByName("playerTeamText["+i+"]");
 		var pColor = Engine.GetGUIObjectByName("playerColour["+i+"]");
@@ -1445,6 +1446,7 @@ function onGameAttributesChange()
 		if (!g_IsController || g_GameAttributes.mapType == "scenario")
 		{
 			pCivText.hidden = false;
+			pCivButton.hidden = true;
 			pCiv.hidden = true;
 			pTeamText.hidden = false;
 			pTeam.hidden = true;
@@ -1458,6 +1460,7 @@ function onGameAttributesChange()
 		else if (g_GameAttributes.mapType != "scenario")
 		{
 			pCivText.hidden = true;
+			pCivButton.hidden = false;
 			pCiv.hidden = false;
 			pTeamText.hidden = true;
 			pTeam.hidden = false;
