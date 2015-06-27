@@ -2,19 +2,19 @@
 
 <sprites>
 	
-	<sprite name="EmblemDefault" />
+	<sprite name="EmblemDefault"/>
 	
-	<sprite name="EmblemDisable" />
+	<sprite name="EmblemDisable"/>
 	
 	<sprite name="EmblemOver">
 		<image
-			texture="session/portraits/emblem/states/hover.png"
+			texture="session/portraits/emblems/states/hover.png"
 		/>
 	</sprite>
 	
 	<sprite name="EmblemPress">
 		<image
-			texture="session/portraits/emblem/states/click.png"
+			texture="session/portraits/emblems/states/click.png"
 		/>
 	</sprite>
 	
